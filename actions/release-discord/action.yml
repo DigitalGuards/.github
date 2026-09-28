@@ -1,0 +1,34 @@
+name: Release announcement for Discord
+description: Posts a release's notes to a Discord channel as one message that can be forwarded.
+inputs:
+  webhook:
+    description: Discord webhook URL (a trailing /github is accepted and removed)
+    required: false
+    default: ""
+  project:
+    description: Display name for the heading, such as "MyQRLWallet Extension"
+    required: true
+  tag:
+    description: Release tag to announce when run by hand (defaults to the triggering release)
+    required: false
+    default: ""
+  dry-run:
+    description: Print the message instead of posting it
+    required: false
+    default: "false"
+  prereleases:
+    description: Also announce prereleases
+    required: false
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        WEBHOOK_URL: ${{ inputs.webhook }}
+        PROJECT: ${{ inputs.project }}
+        TAG: ${{ inputs.tag }}
+        DRY_RUN: ${{ inputs.dry-run }}
+        PRERELEASES: ${{ inputs.prereleases }}
+        GH_TOKEN: ${{ github.token }}
+      run: python3 "$GITHUB_ACTION_PATH/announce.py"
