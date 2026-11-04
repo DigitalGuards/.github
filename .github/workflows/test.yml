@@ -3,7 +3,13 @@ name: Test
 on:
   push:
     branches: [main]
+    paths:
+      - 'actions/release-discord/**'
+      - '.github/workflows/test.yml'
   pull_request:
+    paths:
+      - 'actions/release-discord/**'
+      - '.github/workflows/test.yml'
 
 permissions:
   contents: read
@@ -11,7 +17,10 @@ permissions:
 jobs:
   release-discord:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - run: python3 -m unittest -v test_announce
         working-directory: actions/release-discord
